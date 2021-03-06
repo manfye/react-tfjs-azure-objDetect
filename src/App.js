@@ -40,18 +40,17 @@ function App() {
 
   const url = {
     model:
-      "https://orangerx.b-cdn.net/model/model.json",
+      // "https://orangerx.b-cdn.net/model/model.json",
+
+      "https://orangerx.b-cdn.net/tfjsModel/model.json",
   };
-  // https://github.com/naptha/tesseract.js/blob/master/docs/api.md#worker-set-parameters
-  const [inputText, setInput] = useState("");
-  const [imageData, setImageData] = useState("./hand.jpg");
+  const [imageData, setImageData] = useState("./pic2.jpg");
   const [model, setModel] = useState();
   const [predictionData, setPredictionData] = useState("");
   const [start, setStart] = useState(false);
   const [fingerState, setFingerState] = useState([]);
   const [handDetected, setHandDetected] = useState(false)
-  const [noOfBalloon, setBalloon] = useState(0)
-  // const [score, setScore] = useState(0)
+
   const counterBaloon = useRef(0);
   const score = useRef(0);
  
@@ -63,71 +62,77 @@ function App() {
   const [ocr, setOcr] = useState('Recognizing...');
 
   const mounted = useRef(false);
-
-  async function loadModel() {
+ 
+  async function loadModel(url) {
     try {
-      for (let i = 0; i < 4; i++) {
-        const w = createWorker();
-        await w.load();
-        await w.loadLanguage('eng');
-        await w.initialize('eng');
-        console.log("worker"+i)
-        scheduler.addWorker(w);
-      }
-    
-      
+      const model = await tf.loadGraphModel(url.model);
+      setModel(model);
+      console.log("setloadedModel");
+
       // await worker.terminate();
       // console.log("setloadedModel")
     } catch (err) {
       console.log(err);
-      console.log("failed load model")
-
+      console.log("failed load model");
     }
-
-
   }
 
+
+  useEffect(() => {
+    tf.ready().then(() => {
+      loadModel(url);
+    });
+  }, []);
 
 
 
   async function predictionFunction() {
-    // const poseNet = await net.estimateSinglePose(document.getElementById("img"), {
-    //   flipHorizontal: false
-    // });
+
     predictModel(model);
     
   }
 
 
   async function predictModel(model) {
-    // const { data } = await worker.recognize(  "https://tesseract.projectnaptha.com/img/eng_bw.png");
-      //  const { data } = await worker.recognize(  webcamRef.current.getScreenshot({width: 1920, height: 1080}));
-    console.log(webcamRef.current.getScreenshot({width: 1920, height: 1080}))
-       const data =  await  scheduler.addJob('recognize',  webcamRef.current.getScreenshot({width: 1920, height: 1080}));
-    // );
-      console.log(data)
-      setOcr(data.data.text);
-    // const predictions = await model.detect(
-    //   document.getElementById("img")
-    // );
 
+    let tensor = tf.browser.fromPixels(document.getElementById("img"), 3)
+		.resizeNearestNeighbor([416, 416]) // change the image size, depend on training image
+		.expandDims()
+		.toFloat()
+    // .reverse(-1); // RGB -> BGR if old model needed
+
+	
+  let predictions = await model.predict(tensor).data();
+  console.log(predictions);
+
+    if (predictions.length > 0) {
+    
+      setPredictionData(predictions);
+      // console.log(predictions);
+      setHandDetected(true)
+      console.log(predictions[0].class)
+    }
    
   }
 
-
-
-
-  useEffect(() => {
-    tf.ready().then(() => {
-      loadModel();
-    });
-  }, []);
 
   useEffect(()=>{
     //prevent initial triggering
     if (mounted.current) {
       predictionFunction()
       // generateBalloon()
+    } else {
+      mounted.current = true;
+    }
+   
+  }, [start])
+
+
+
+  useEffect(()=>{
+    //prevent initial triggering
+    if (mounted.current) {
+      // predictionFunction()
     } else {
       mounted.current = true;
     }
@@ -233,8 +238,7 @@ function App() {
               <Box mt={2} />{" "}
             </>
           )}
-           <Webcam
-        // style={{ position: "absolute", bottom: "8px", right: "16px" }}
+           {/* <Webcam
         audio={false}
         id="img"
         ref={webcamRef}
@@ -242,7 +246,12 @@ function App() {
         screenshotQuality={1}
         screenshotFormat="image/jpeg"
         videoConstraints={videoConstraints}
-      />
+      /> */}
+        <img
+          style={{ width: "50%", objectFit: "fill" }}
+          id="img"
+          src={imageData}
+        ></img> 
         </Grid>
         <Grid item xs={12} md={12}>
           {/* <canvas
