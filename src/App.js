@@ -45,7 +45,7 @@ function App() {
 
       "https://orangerx.b-cdn.net/tfjsModel/model.json",
   };
-  const [imageData, setImageData] = useState("./pic2.jpg");
+  const [imageData, setImageData] = useState("./pic47.jpg");
   const [model, setModel] = useState();
   const [predictionData, setPredictionData] = useState("");
   const [start, setStart] = useState(false);
