@@ -16,13 +16,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import { blue } from "@material-ui/core/colors";
 // import * as cocoSsd from "@tensorflow-models/coco-ssd";
 // import * as tf from "@tensorflow/tfjs-core";
-import * as tf from "@tensorflow/tfjs";
+// import * as tf from "@tensorflow/tfjs";
 // import {loadGraphModel} from '@tensorflow/tfjs-converter';
 
 // import * as posenet from '@tensorflow-models/posenet';
 import Webcam from "react-webcam";
 import { createWorker,createScheduler  } from 'tesseract.js';
-// import * as cvstfjs from '@microsoft/customvision-tfjs';
+import * as cvstfjs from '@microsoft/customvision-tfjs';
 
 
 function App() {
@@ -67,9 +67,9 @@ function App() {
   async function loadModel(url) {
     try {
       // const model = await tf.loadGraphModel(url.model);
-      const model = await tf.loadGraphModel("model.json");
-      setModel(model);
-      console.log("setloadedModel");
+      // const model = await tf.loadGraphModel("model.json");
+      // setModel(model);
+      // console.log("setloadedModel");
 
       // await worker.terminate();
       // console.log("setloadedModel")
@@ -81,50 +81,50 @@ function App() {
 
 
   useEffect(() => {
-    tf.ready().then(() => {
-      loadModel(url);
-    });
+    // tf.ready().then(() => {
+    //   loadModel(url);
+    // });
   }, []);
 
 
 
   async function predictionFunction() {
     //testing azure vision api
-    // let model = new cvstfjs.ObjectDetectionModel();
-    // await model.loadModelAsync("model.json");
-    // const image = document.getElementById('img');
-    // console.log(model)
-    // const result = await model.executeAsync(image);
+    let model = new cvstfjs.ObjectDetectionModel();
+    await model.loadModelAsync("model.json");
+    const image = document.getElementById('img');
+    console.log(model)
+    const result = await model.executeAsync(image);
 
-    // console.log(result)
-    predictModel(model);
+    console.log(result)
+    // predictModel(model);
     
   }
 
 
   async function predictModel(model) {
-    console.log(model.inputs[0].shape[1]);
-    let tensor = tf.browser
-      .fromPixels(document.getElementById("img"), 3)
-      .resizeNearestNeighbor([
-        model.inputs[0].shape[1],
-        model.inputs[0].shape[1],
-      ]) // change the image size, depend on training image
-      .expandDims()
-      .toFloat();
-    // .reverse(-1); // RGB -> BGR if old model needed
+  //   console.log(model.inputs[0].shape[1]);
+  //   let tensor = tf.browser
+  //     .fromPixels(document.getElementById("img"), 3)
+  //     .resizeNearestNeighbor([
+  //       model.inputs[0].shape[1],
+  //       model.inputs[0].shape[1],
+  //     ]) // change the image size, depend on training image
+  //     .expandDims()
+  //     .toFloat();
+  //   // .reverse(-1); // RGB -> BGR if old model needed
 
-    let outputs = await model.predict(tensor).data();
+  //   let outputs = await model.predict(tensor).data();
 
-	let predictions = await outputs;
-  console.log(predictions)
-    // console.log(processPrediction(predictions));
+	// let predictions = await outputs;
+  // console.log(predictions)
+  //   // console.log(processPrediction(predictions));
 
-    if (predictions.length > 0) {
-      setPredictionData(predictions);
-      // console.log(predictions);
+  //   if (predictions.length > 0) {
+  //     setPredictionData(predictions);
+  //     // console.log(predictions);
  
-    }
+  //   }
   }
 
   useEffect(() => {
@@ -149,53 +149,53 @@ function App() {
   }
   
 
-  async function processPrediction(predictions){
-    if (predictions.length != 3) {
+  // async function processPrediction(predictions){
+  //   if (predictions.length != 3) {
  
-        const num_anchor = ANCHORS.length / 2;
-      const channels = predictions[0][0][0].length;
-      const height = predictions[0].length;
-      const width = predictions[0][0].length;
+  //       const num_anchor = ANCHORS.length / 2;
+  //     const channels = predictions[0][0][0].length;
+  //     const height = predictions[0].length;
+  //     const width = predictions[0][0].length;
   
-      const num_class = channels / num_anchor - 5;
+  //     const num_class = channels / num_anchor - 5;
   
-      let boxes = [];
-      let scores = [];
-      let classes = [];
+  //     let boxes = [];
+  //     let scores = [];
+  //     let classes = [];
   
-      for (var grid_y = 0; grid_y < height; grid_y++) {
-        for (var grid_x = 0; grid_x < width; grid_x++) {
-          let offset = 0;
+  //     for (var grid_y = 0; grid_y < height; grid_y++) {
+  //       for (var grid_x = 0; grid_x < width; grid_x++) {
+  //         let offset = 0;
   
-          for (var i = 0; i < num_anchor; i++) {
-            let x = (_logistic(predictions[0][grid_y][grid_x][offset++]) + grid_x) / width;
-            let y = (_logistic(predictions[0][grid_y][grid_x][offset++]) + grid_y) / height;
-            let w = Math.exp(predictions[0][grid_y][grid_x][offset++]) * ANCHORS[i * 2] / width;
-            let h = Math.exp(predictions[0][grid_y][grid_x][offset++]) * ANCHORS[i * 2 + 1] / height;
+  //         for (var i = 0; i < num_anchor; i++) {
+  //           let x = (_logistic(predictions[0][grid_y][grid_x][offset++]) + grid_x) / width;
+  //           let y = (_logistic(predictions[0][grid_y][grid_x][offset++]) + grid_y) / height;
+  //           let w = Math.exp(predictions[0][grid_y][grid_x][offset++]) * ANCHORS[i * 2] / width;
+  //           let h = Math.exp(predictions[0][grid_y][grid_x][offset++]) * ANCHORS[i * 2 + 1] / height;
   
-            let objectness = tf.scalar(_logistic(predictions[0][grid_y][grid_x][offset++]));
-            let class_probabilities = tf.tensor1d(predictions[0][grid_y][grid_x].slice(offset, offset + num_class)).softmax();
-            offset += num_class;
+  //           let objectness = tf.scalar(_logistic(predictions[0][grid_y][grid_x][offset++]));
+  //           let class_probabilities = tf.tensor1d(predictions[0][grid_y][grid_x].slice(offset, offset + num_class)).softmax();
+  //           offset += num_class;
   
-            class_probabilities = class_probabilities.mul(objectness);
-            let max_index = class_probabilities.argMax();
-            boxes.push([x - w / 2, y - h / 2, x + w / 2, y + h / 2]);
-            scores.push(class_probabilities.max().dataSync()[0]);
-            classes.push(max_index.dataSync()[0]);
-          }
-        }
-      }
+  //           class_probabilities = class_probabilities.mul(objectness);
+  //           let max_index = class_probabilities.argMax();
+  //           boxes.push([x - w / 2, y - h / 2, x + w / 2, y + h / 2]);
+  //           scores.push(class_probabilities.max().dataSync()[0]);
+  //           classes.push(max_index.dataSync()[0]);
+  //         }
+  //       }
+  //     }
   
-      boxes = tf.tensor2d(boxes);
-      scores = tf.tensor1d(scores);
-      classes = tf.tensor1d(classes);
+  //     boxes = tf.tensor2d(boxes);
+  //     scores = tf.tensor1d(scores);
+  //     classes = tf.tensor1d(classes);
   
-      const selected_indices = await tf.image.nonMaxSuppressionAsync(boxes, scores, 10);
-      predictions = [await boxes.gather(selected_indices).array(), await scores.gather(selected_indices).array(), await classes.gather(selected_indices).array()];
-    }
+  //     const selected_indices = await tf.image.nonMaxSuppressionAsync(boxes, scores, 10);
+  //     predictions = [await boxes.gather(selected_indices).array(), await scores.gather(selected_indices).array(), await classes.gather(selected_indices).array()];
+  //   }
   
-    return predictions;
-  }
+  //   return predictions;
+  // }
 
   useEffect(()=>{
     //prevent initial triggering
@@ -316,7 +316,7 @@ function App() {
         videoConstraints={videoConstraints}
       /> */}
         <img
-          style={{ width: "50%", objectFit: "fill" }}
+          style={{ width: "100%", objectFit: "fill" }}
           id="img"
           src={imageData}
         ></img> 
