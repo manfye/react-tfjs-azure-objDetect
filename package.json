@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@microsoft/customvision-tfjs": "^1.2.0",
     "@tensorflow-models/coco-ssd": "^2.2.1",
     "@tensorflow-models/handpose": "^0.0.6",
     "@tensorflow-models/posenet": "^2.2.1",
