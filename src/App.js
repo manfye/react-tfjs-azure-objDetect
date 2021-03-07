@@ -117,7 +117,6 @@ function App() {
     let outputs = await model.predict(tensor).data();
 
 	let predictions = await outputs;
-  console.log(predictions.filter((item)=> item > 0.5))
   console.log(predictions)
     // console.log(processPrediction(predictions));
 
@@ -271,7 +270,7 @@ function App() {
             flexDirection: "column",
           }}
         >
-          {predictionData ? null : (
+        
             <>
               {" "}
               <Box mt={15} />
@@ -306,7 +305,7 @@ function App() {
               )}
               <Box mt={2} />{" "}
             </>
-          )}
+       
            {/* <Webcam
         audio={false}
         id="img"
