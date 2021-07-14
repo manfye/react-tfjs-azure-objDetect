@@ -89,7 +89,7 @@ const [videoWidth, setVideoWidth ] = useState(0)
     if (predictions[0].length > 0) {
       for (let n = 0; n < predictions[0].length; n++) {
         // Check scores
-        if (predictions[1][n] > 0.2) {
+        if (predictions[1][n] > 0.5) {
           const p = document.createElement("p");
           p.innerText =
             "Pill" +
@@ -126,10 +126,10 @@ const [videoWidth, setVideoWidth ] = useState(0)
               Math.round(parseFloat(predictions[1][n]) * 100) +
               "%",
             bboxLeft,
-            bboxTop + 40
+            bboxTop + 70
           );
 
-          ctx.rect(bboxLeft, bboxTop + 40, bboxWidth, bboxHeight);
+          ctx.rect(bboxLeft, bboxTop + 80, bboxWidth, bboxHeight);
           ctx.strokeStyle = "#FF0000";
 
           ctx.lineWidth = 3;
@@ -138,6 +138,8 @@ const [videoWidth, setVideoWidth ] = useState(0)
           console.log("detected");
         }
       }
+      setTimeout(() => predictionFunction(), 500);
+
     }
   }
 
