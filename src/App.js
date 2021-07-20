@@ -30,13 +30,13 @@ function App() {
   }));
   const classes = useStyles();
 
-  const [start, setStart] = useState(false);
+  // const [start, setStart] = useState(false);
   const webcamRef = React.useRef(null);
 
   const [videoWidth, setVideoWidth] = useState(0);
   const [videoHeight, setVideoHeight] = useState(0);
 
-  const mounted = useRef(false);
+  // const mounted = useRef(false);
 
   async function predictionFunction() {
     setVideoHeight(webcamRef.current.video.videoHeight);
@@ -44,8 +44,8 @@ function App() {
     //testing azure vision api
     let model = new cvstfjs.ObjectDetectionModel();
     await model.loadModelAsync("model.json");
-    const image = document.getElementById("img");
-    console.log(model);
+    // const image = document.getElementById("img");
+    // console.log(model);
     // const result = await model.executeAsync(image);
 
     const predictions = await model.executeAsync(
@@ -118,24 +118,16 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    //prevent initial triggering
-    if (mounted.current) {
-      console.log("hello");
-      predictionFunction();
-    } else {
-      mounted.current = true;
-    }
-  }, [start]);
+  // useEffect(() => {
+  //   //prevent initial triggering
+  //   if (mounted.current) {
+  //     console.log("hello");
+  //     predictionFunction();
+  //   } else {
+  //     mounted.current = true;
+  //   }
+  // }, [start]);
 
-  useEffect(() => {
-    //prevent initial triggering
-    if (mounted.current) {
-      // predictionFunction()
-    } else {
-      mounted.current = true;
-    }
-  }, [start]);
 
   const videoConstraints = {
     height: 1080,
