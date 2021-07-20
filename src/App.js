@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import logo from "./logo.svg";
 import {
   TextField,
   Grid,
@@ -10,20 +9,12 @@ import {
   IconButton,
   Button,
 } from "@material-ui/core";
-import './App.css'
+import "./App.css";
 import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles } from "@material-ui/core/styles";
-// import { blue } from "@material-ui/core/colors";
-// import * as cocoSsd from "@tensorflow-models/coco-ssd";
-// import * as tf from "@tensorflow/tfjs-core";
-// import * as tf from "@tensorflow/tfjs";
-// import {loadGraphModel} from '@tensorflow/tfjs-converter';
 
-// import * as posenet from '@tensorflow-models/posenet';
 import Webcam from "react-webcam";
-// import { createWorker,createScheduler  } from 'tesseract.js';
-import * as cvstfjs from '@microsoft/customvision-tfjs';
-
+import * as cvstfjs from "@microsoft/customvision-tfjs";
 
 function App() {
   const useStyles = makeStyles((theme) => ({
@@ -39,28 +30,13 @@ function App() {
   }));
   const classes = useStyles();
 
-  const url = {
-    model:
-      // "https://orangerx.b-cdn.net/model/model.json",
-
-      "https://orangerx.b-cdn.net/tfjsModel/model.json",
-  };
   const [start, setStart] = useState(false);
-  const [handDetected, setHandDetected] = useState(false)
   const webcamRef = React.useRef(null);
 
-const [videoWidth, setVideoWidth ] = useState(0)
- const [videoHeight, setVideoHeight] = useState(0)
- const [imageData, setImageData] = useState("./pic2.jpg");
-  const [ocr, setOcr] = useState('Recognizing...');
+  const [videoWidth, setVideoWidth] = useState(0);
+  const [videoHeight, setVideoHeight] = useState(0);
 
   const mounted = useRef(false);
- 
- 
-
-  
-
-
 
   async function predictionFunction() {
     setVideoHeight(webcamRef.current.video.videoHeight);
@@ -139,46 +115,34 @@ const [videoWidth, setVideoWidth ] = useState(0)
         }
       }
       setTimeout(() => predictionFunction(), 500);
-
     }
   }
-
 
   useEffect(() => {
     //prevent initial triggering
     if (mounted.current) {
-      console.log("hello")
+      console.log("hello");
       predictionFunction();
-   
     } else {
       mounted.current = true;
     }
   }, [start]);
 
-
-
-  useEffect(()=>{
+  useEffect(() => {
     //prevent initial triggering
     if (mounted.current) {
       // predictionFunction()
     } else {
       mounted.current = true;
     }
-   
-  }, [start])
- 
+  }, [start]);
+
   const videoConstraints = {
     height: 1080,
     width: 1920,
     // height: 120,
     facingMode: "environment",
   };
-
-
-   
- 
-
-
 
   return (
     <div
@@ -229,68 +193,51 @@ const [videoWidth, setVideoWidth ] = useState(0)
             flexDirection: "column",
           }}
         >
-        
-            <>
-              {" "}
-              <Box mt={15} />
-              <Typography
-                align="center"
+          <>
+            {" "}
+            <Box mt={15} />
+            <Box mt={2} />
+            {
+              <Button
+                variant={"contained"}
                 style={{
-                  fontSize: "50px",
-                  fontWeight: "bold",
-                  fontFamily: "Roboto",
+                  color: "white",
+                  backgroundColor: "blueviolet",
+                  width: "50%",
+                  maxWidth: "250px",
+                }}
+                onClick={() => {
+                  predictionFunction();
                 }}
               >
-               {ocr}
-              </Typography>
-             
-              <Box mt={2} />
-              { (
-                <Button
-                  variant={"contained"}
-                  style={{
-                    color: "white",
-                    backgroundColor: "blueviolet",
-                    width: "50%",
-                    maxWidth: "250px",
-                  }}
-                  onClick={() => {
-                    predictionFunction()
-
-                  }}
-                >
-                  Start Game
-                </Button>
-              )}
-              <Box mt={2} />{" "}
-            </>
-        <canvas
-          id="myCanvas"
-          width={videoWidth}
-          height={videoHeight}
-          style={{ backgroundColor: "transparent" }}
-        />
-           <Webcam
-        audio={false}
-        id="img"
-        ref={webcamRef}
-        //  width={640}
-        screenshotQuality={1}
-        screenshotFormat="image/jpeg"
-        videoConstraints={videoConstraints}
-      />
-        {/* <img
+                Start Detect
+              </Button>
+            }
+            <Box mt={2} />{" "}
+          </>
+          <canvas
+            id="myCanvas"
+            width={videoWidth}
+            height={videoHeight}
+            style={{ backgroundColor: "transparent" }}
+          />
+          <Webcam
+            audio={false}
+            id="img"
+            ref={webcamRef}
+            //  width={640}
+            screenshotQuality={1}
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+          />
+          {/* <img
           style={{ width: "100%", objectFit: "fill" }}
           id="img"
           src={imageData}
         ></img>  */}
         </Grid>
-        <Grid item xs={12} md={12}>
-         
-        </Grid>
+        <Grid item xs={12} md={12}></Grid>
       </Grid>
-     
-      
     </div>
   );
 }
