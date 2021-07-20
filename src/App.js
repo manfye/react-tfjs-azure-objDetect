@@ -13,7 +13,7 @@ import {
 import './App.css'
 import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles } from "@material-ui/core/styles";
-import { blue } from "@material-ui/core/colors";
+// import { blue } from "@material-ui/core/colors";
 // import * as cocoSsd from "@tensorflow-models/coco-ssd";
 // import * as tf from "@tensorflow/tfjs-core";
 // import * as tf from "@tensorflow/tfjs";
@@ -21,7 +21,7 @@ import { blue } from "@material-ui/core/colors";
 
 // import * as posenet from '@tensorflow-models/posenet';
 import Webcam from "react-webcam";
-import { createWorker,createScheduler  } from 'tesseract.js';
+// import { createWorker,createScheduler  } from 'tesseract.js';
 import * as cvstfjs from '@microsoft/customvision-tfjs';
 
 
@@ -51,7 +51,7 @@ function App() {
 
 const [videoWidth, setVideoWidth ] = useState(0)
  const [videoHeight, setVideoHeight] = useState(0)
-
+ const [imageData, setImageData] = useState("./pic2.jpg");
   const [ocr, setOcr] = useState('Recognizing...');
 
   const mounted = useRef(false);
@@ -147,9 +147,9 @@ const [videoWidth, setVideoWidth ] = useState(0)
   useEffect(() => {
     //prevent initial triggering
     if (mounted.current) {
+      console.log("hello")
       predictionFunction();
    
-      // generateBalloon()
     } else {
       mounted.current = true;
     }
@@ -274,7 +274,7 @@ const [videoWidth, setVideoWidth ] = useState(0)
         audio={false}
         id="img"
         ref={webcamRef}
-        // width={640}
+        //  width={640}
         screenshotQuality={1}
         screenshotFormat="image/jpeg"
         videoConstraints={videoConstraints}
