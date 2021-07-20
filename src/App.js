@@ -41,12 +41,11 @@ function App() {
   async function predictionFunction() {
     setVideoHeight(webcamRef.current.video.videoHeight);
     setVideoWidth(webcamRef.current.video.videoWidth);
+   
     //testing azure vision api
     let model = new cvstfjs.ObjectDetectionModel();
     await model.loadModelAsync("model.json");
-    // const image = document.getElementById("img");
-    // console.log(model);
-    // const result = await model.executeAsync(image);
+
 
     const predictions = await model.executeAsync(
       document.getElementById("img")
