@@ -64,7 +64,7 @@ function App() {
     if (predictions[0].length > 0) {
       for (let n = 0; n < predictions[0].length; n++) {
         // Check scores
-        if (predictions[1][n] > 0.5) {
+        if (predictions[1][n] > 0.4) {
           const p = document.createElement("p");
           p.innerText =
             "Pill" +
